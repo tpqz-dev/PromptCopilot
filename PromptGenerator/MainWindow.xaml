@@ -1,0 +1,125 @@
+<Window x:Class="PromptGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:PromptGenerator.ViewModels"
+        Title="PromptGenerator" Height="700" Width="900">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Grid Margin="10">
+        <TabControl>
+            <TabItem Header="Génération">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                        <StackPanel Margin="0,0,16,0">
+                            <TextBlock Text="Language" />
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Width="200" ItemsSource="{Binding Languages}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedLanguage}" />
+                                <Button Content="Add to Base" Margin="6,0,0,0" Width="90" Click="AddLanguageButton_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,16,0">
+                            <TextBlock Text="Type" />
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Width="200" ItemsSource="{Binding ApplicationTypes}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedAppType}" />
+                                <Button Content="Add to Base" Margin="6,0,0,0" Width="90" Click="AddAppTypeButton_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Domaine" />
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Width="200" ItemsSource="{Binding ApplicationDomains}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedDomain}" />
+                                <Button Content="Add to Base" Margin="6,0,0,0" Width="90" Click="AddDomainButton_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Margin="20,0,0,0" VerticalAlignment="Bottom">
+                            <Button Content="Générer" Width="120" Command="{Binding GenerateCommand}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <GroupBox Header="Steps" Grid.Row="1" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <DataGrid ItemsSource="{Binding Steps}" SelectedItem="{Binding SelectedStep}" AutoGenerateColumns="False" CanUserAddRows="True" Margin="4" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Order" Binding="{Binding OrderIndex}" Width="80"/>
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="4">
+                                <Button Content="Save Step" Width="100" Margin="4" Command="{Binding SaveStepCommand}" />
+                                <Button Content="Delete Step" Width="100" Margin="4" Command="{Binding DeleteStepCommand}" />
+                                <Button Content="Load from DB" Width="110" Margin="4" Command="{Binding LoadFromDbCommand}" />
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Prompt généré" Grid.Row="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBox Text="{Binding GeneratedPrompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="4" />
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="4">
+                                <Button Content="Exporter (.txt)" Width="120" Margin="4" Click="ExportTxt_Click"/>
+                                <Button Content="Exporter (.json)" Width="120" Margin="4" Click="ExportJson_Click"/>
+                                <Button Content="Charger des données de démonstration" Width="220" Margin="4" Command="{Binding SeedDemoDataCommand}" />
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Administration">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Languages" Margin="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ListBox ItemsSource="{Binding Languages}" DisplayMemberPath="Name" Margin="4"/>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="4">
+                                <Button Content="Reload" Width="80" Margin="4" Command="{Binding LoadFromDbCommand}"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Application Types" Grid.Column="1" Margin="4">
+                        <Grid>
+                            <ListBox ItemsSource="{Binding ApplicationTypes}" DisplayMemberPath="Name" Margin="4"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Application Domains" Grid.Column="2" Margin="4">
+                        <Grid>
+                            <ListBox ItemsSource="{Binding ApplicationDomains}" DisplayMemberPath="Name" Margin="4"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
